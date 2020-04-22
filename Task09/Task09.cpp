@@ -51,30 +51,35 @@ void loadFromFile(std::string filename, E2* arglist1, E2* arglist2)
 void applyAlgorithm(E2* arglist1, E2* arglist2)
 {
 	E2* iter2 = arglist2->_next;
+	E2* iter1 = arglist1->_next;
 	while (iter2 != arglist2)
 	{
 		bool bStop = false;
-		E2* iter1 = arglist1->_next;
 		while (iter1 != arglist1 && !bStop)
 		{
-			if (iter2->_key.code == iter1->_key.code) //If the exam was retaken
+			if (iter2->_key.code == iter1->_key.code) //If it needs to be updated
 			{
 				bStop = true;
 				E2* p = iter2;
 				iter2 = iter2->_next;
 				iter2->out(iter2->_prev);
 				p->follow(iter1, p);
-				iter1->out(iter1);
+				iter1 = iter1->_next;
+				iter1->out(iter1->_prev);
 			}
-			else if ((iter2->_key.code > iter1->_key.code && iter2->_key.code < iter1->_next->_key.code) || (iter2->_key.code > iter1->_key.code&& iter1->_next == arglist1))
+			else if ((iter2->_key.code > iter1->_key.code&& iter2->_key.code < iter1->_next->_key.code) || (iter2->_key.code > iter1->_key.code&& iter1->_next == arglist1)) //If it needs to be inserted
 			{
 				bStop = true;
 				E2* p = iter2;
 				iter2 = iter2->_next;
 				iter2->out(iter2->_prev);
 				p->follow(iter1, p);
+				iter1 = p;
 			}
-			iter1 = iter1->_next;
+			else
+			{
+				iter1 = iter1->_next;
+			}
 		}
 		if (!bStop)
 		{
